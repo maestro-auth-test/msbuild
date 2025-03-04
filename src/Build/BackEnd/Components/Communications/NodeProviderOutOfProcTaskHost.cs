@@ -379,8 +379,9 @@ namespace Microsoft.Build.BackEnd
         /// </summary>
         internal static string GetTaskHostNameFromHostContext(HandshakeOptions hostContext)
         {
-            ErrorUtilities.VerifyThrowInternalErrorUnreachable((hostContext & HandshakeOptions.TaskHost) == HandshakeOptions.TaskHost);
-            if ((hostContext & HandshakeOptions.CLR2) == HandshakeOptions.CLR2)
+            ErrorUtilities.VerifyThrowInternalErrorUnreachable(IsHandshakeOptionEnabled(HandshakeOptions.TaskHost));
+
+            if (IsHandshakeOptionEnabled(HandshakeOptions.CLR2))
             {
                 return TaskHostNameForClr2TaskHost;
             }
@@ -388,20 +389,21 @@ namespace Microsoft.Build.BackEnd
             {
                 if (s_msbuildName == null)
                 {
-                    s_msbuildName = Environment.GetEnvironmentVariable("MSBUILD_EXE_NAME");
-
-                    s_msbuildName ??= (hostContext & HandshakeOptions.NET) == HandshakeOptions.NET
-                            ? (NativeMethodsShared.IsWindows ? "dotnet.exe" : "dotnet")
-                            : "MSBuild.exe";
+                    // for NET the executable is resolved from DOTNET_EXPERIMENTAL_HOST_PATH
+                    s_msbuildName = IsHandshakeOptionEnabled(HandshakeOptions.NET)
+                        ? string.Empty
+                        : Environment.GetEnvironmentVariable("MSBUILD_EXE_NAME") ?? Constants.MSBuildExecutableName;
                 }
 
                 return s_msbuildName;
             }
+
+            bool IsHandshakeOptionEnabled(HandshakeOptions option) => (hostContext & option) == option;
         }
 
         /// <summary>
         /// Given a TaskHostContext, return the appropriate location of the
-        /// executable (MSBuild, MSBuildTaskHost or dotnet) and path to MSBuild.dll if we want to use a custom one.
+        /// executable (e.g. MSBuild, MSBuildTaskHost or dotnet) and path to MSBuild.dll if we want to use a custom one.
         /// null is returned if executable cannot be resolved.
         /// </summary>
         internal static (string msbuildExcutable, string msbuildAssemblyPath) GetMSBuildLocationFromHostContext(HandshakeOptions hostContext)
@@ -463,7 +465,7 @@ namespace Microsoft.Build.BackEnd
             }
             else if (IsHandshakeOptionEnabled(HandshakeOptions.NET))
             {
-                msbuildAssemblyPath = Path.Combine(BuildEnvironmentHelper.Instance.MSBuildAssemblyDirectory, "MSBuild.dll");
+                msbuildAssemblyPath = Path.Combine(BuildEnvironmentHelper.Instance.MSBuildAssemblyDirectory, Constants.MSBuildAssemblyName);
                 toolPath = s_baseTaskHostPathNet;
             }
             else
@@ -556,7 +558,7 @@ namespace Microsoft.Build.BackEnd
                 commandLineArgs = $"/nologo /nodemode:2 /nodereuse:{ComponentHost.BuildParameters.EnableNodeReuse} /low:{ComponentHost.BuildParameters.LowPriority}";
             }
 
-            CommunicationsUtilities.Trace("For a host context of {0}, spawning executable from {1}.", hostContext.ToString(), msbuildExecutable ?? "MSBuild.exe");
+            CommunicationsUtilities.Trace("For a host context of {0}, spawning executable from {1}.", hostContext.ToString(), msbuildExecutable ?? Constants.MSBuildExecutableName);
 
             // There is always one task host per host context so we always create just 1 one task host node here.
             int nodeId = (int)hostContext;

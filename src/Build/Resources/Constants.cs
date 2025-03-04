@@ -142,6 +142,16 @@ namespace Microsoft.Build.Internal
         internal const string Dev10SubToolsetValue = "10.0";
 
         /// <summary>
+        /// MSBuild executable name.
+        /// </summary>
+        internal static readonly string MSBuildExecutableName = "MSBuild.exe";
+
+        /// <summary>
+        /// MSBuild assembly name.
+        /// </summary>
+        internal static readonly string MSBuildAssemblyName = "MSBuild.dll";
+
+        /// <summary>
         /// Current version of this MSBuild Engine assembly in the
         /// form, e.g, "4.0"
         /// </summary>

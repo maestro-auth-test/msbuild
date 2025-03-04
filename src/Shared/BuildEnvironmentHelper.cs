@@ -666,7 +666,7 @@ namespace Microsoft.Build.Shared
         internal string MSBuildToolsDirectoryArm64 { get; }
 
         /// <summary>
-        /// Path to the NET tools directory.
+        /// Full path to the NET tools directory with executable included.
         /// </summary>
         internal string MSBuildToolsDirectoryNET { get; }
 

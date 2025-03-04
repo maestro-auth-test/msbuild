@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 #endif
 using System.Linq;
+using System.Net.Sockets;
 using System.Reflection;
 #if FEATURE_APARTMENT_STATE
 using System.Runtime.ExceptionServices;
@@ -420,7 +421,7 @@ namespace Microsoft.Build.BackEnd
                 if (howToExecuteTask == TaskExecutionMode.ExecuteTaskAndGatherOutputs)
                 {
                     // We need to find the task before logging the task started event so that the using task statement comes before the task started event
-                    IDictionary<string, string> taskIdentityParameters = GatherTaskIdentityParameters(bucket.Expander);
+                    IDictionary<string, string> taskIdentityParameters = GatherTaskIdentityParameters(bucket.Expander, bucket.Lookup);
                     (TaskRequirements? requirements, TaskFactoryWrapper taskFactoryWrapper) = _taskExecutionHost.FindTask(taskIdentityParameters);
                     string taskAssemblyLocation = taskFactoryWrapper?.TaskFactoryLoadedType?.Path;
 
@@ -521,7 +522,7 @@ namespace Microsoft.Build.BackEnd
         /// <summary>
         /// Returns the set of parameters that can contribute to a task's identity, and their values for this particular task.
         /// </summary>
-        private IDictionary<string, string> GatherTaskIdentityParameters(Expander<ProjectPropertyInstance, ProjectItemInstance> expander)
+        private IDictionary<string, string> GatherTaskIdentityParameters(Expander<ProjectPropertyInstance, ProjectItemInstance> expander, Lookup lookup)
         {
             ErrorUtilities.VerifyThrowInternalNull(_taskNode, "taskNode"); // taskNode should never be null when we're calling this method.
 
@@ -541,7 +542,13 @@ namespace Microsoft.Build.BackEnd
 
                 taskIdentityParameters.Add(XMakeAttributes.runtime, msbuildRuntime);
                 taskIdentityParameters.Add(XMakeAttributes.architecture, msbuildArchitecture);
-            }
+
+                if (msbuildRuntime == XMakeAttributes.MSBuildRuntimeValues.net)
+                {
+                    taskIdentityParameters.Add("DotnetHostPath", lookup.GetProperty("DOTNET_EXPERIMENTAL_HOST_PATH")?.EvaluatedValue);
+                    taskIdentityParameters.Add("TaskHostRuntimeVersion", lookup.GetProperty("SdkResolverMSBuildTaskHostRuntimeVersion")?.EvaluatedValue);
+                }
+            }   
 
             return taskIdentityParameters;
         }
