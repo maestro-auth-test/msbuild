@@ -50,7 +50,7 @@ extends:
             targetPath: '$(Build.ArtifactStagingDirectory)/symbols'
             artifactName: symbols
             condition: succeededOrFailed()
-          - output: pipelineArtifact
+          - output: microBuildVstsDrop
             displayName: 'Upload VSTS Drop'
             dropFolder: 'artifacts\$(BuildConfiguration)\VSSetup\Insertion'
         steps:
