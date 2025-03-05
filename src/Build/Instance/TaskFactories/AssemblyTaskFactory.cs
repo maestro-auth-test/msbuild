@@ -604,11 +604,14 @@ namespace Microsoft.Build.BackEnd
             }
 
             // Add rest of the entries from taskIdentityParameters
-            foreach (KeyValuePair<string, string> kvp in taskIdentityParameters)
+            if (taskIdentityParameters != null && mergedParameters != null)
             {
-                if (!mergedParameters.ContainsKey(kvp.Key))
+                foreach (KeyValuePair<string, string> kvp in taskIdentityParameters)
                 {
-                    mergedParameters[kvp.Key] = kvp.Value;
+                    if (!mergedParameters.ContainsKey(kvp.Key))
+                    {
+                        mergedParameters[kvp.Key] = kvp.Value;
+                    }
                 }
             }
 
