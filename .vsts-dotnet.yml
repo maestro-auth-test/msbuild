@@ -50,6 +50,9 @@ extends:
             targetPath: '$(Build.ArtifactStagingDirectory)/symbols'
             artifactName: symbols
             condition: succeededOrFailed()
+          - output: pipelineArtifact
+            displayName: 'Upload VSTS Drop'
+            dropFolder: 'artifacts\$(BuildConfiguration)\VSSetup\Insertion'
         steps:
         - task: MicroBuildSigningPlugin@1
           inputs:
@@ -116,11 +119,6 @@ extends:
           inputs:
             dropName: 'Products/$(System.TeamProject)/$(Build.Repository.Name)/$(Build.SourceBranchName)/$(Build.BuildNumber)/$(Build.BuildId)'
           enabled: false
-
-        - task: ms-vseng.MicroBuildTasks.4305a8de-ba66-4d8b-b2d1-0dc4ecbbf5e8.MicroBuildUploadVstsDropFolder@1
-          displayName: Upload VSTS Drop
-          inputs:
-            DropFolder: 'artifacts\$(BuildConfiguration)\VSSetup\Insertion'
 
         - task: PublishSymbols@1
           displayName: Index Sources
