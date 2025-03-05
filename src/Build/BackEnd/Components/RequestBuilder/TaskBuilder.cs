@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.IO;
 #if FEATURE_APARTMENT_STATE
 using System.Diagnostics.CodeAnalysis;
 #endif
@@ -21,6 +22,7 @@ using Microsoft.Build.Eventing;
 using Microsoft.Build.Exceptions;
 using Microsoft.Build.Execution;
 using Microsoft.Build.Framework;
+using Microsoft.Build.Internal;
 using Microsoft.Build.Shared;
 using Microsoft.Build.Shared.FileSystem;
 using ElementLocation = Microsoft.Build.Construction.ElementLocation;
@@ -529,26 +531,27 @@ namespace Microsoft.Build.BackEnd
             string msbuildArchitecture = expander.ExpandIntoStringAndUnescape(_taskNode.MSBuildArchitecture ?? String.Empty, ExpanderOptions.ExpandAll, _taskNode.MSBuildArchitectureLocation ?? ElementLocation.EmptyLocation);
             string msbuildRuntime = expander.ExpandIntoStringAndUnescape(_taskNode.MSBuildRuntime ?? String.Empty, ExpanderOptions.ExpandAll, _taskNode.MSBuildRuntimeLocation ?? ElementLocation.EmptyLocation);
 
-            IDictionary<string, string> taskIdentityParameters = null;
+            IDictionary<string, string> taskIdentityParameters = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+
 
             // only bother to create a task identity parameter set if we're putting anything in there -- otherwise,
             // a null set will be treated as equivalent to all parameters being "don't care".
             if (msbuildRuntime != String.Empty || msbuildArchitecture != String.Empty)
             {
-                taskIdentityParameters = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
-
                 msbuildArchitecture = msbuildArchitecture == String.Empty ? XMakeAttributes.MSBuildArchitectureValues.any : msbuildArchitecture.Trim();
                 msbuildRuntime = msbuildRuntime == String.Empty ? XMakeAttributes.MSBuildRuntimeValues.any : msbuildRuntime.Trim();
 
                 taskIdentityParameters.Add(XMakeAttributes.runtime, msbuildRuntime);
                 taskIdentityParameters.Add(XMakeAttributes.architecture, msbuildArchitecture);
+            }
 
-                if (msbuildRuntime == XMakeAttributes.MSBuildRuntimeValues.net)
-                {
-                    taskIdentityParameters.Add("DotnetHostPath", lookup.GetProperty("DOTNET_EXPERIMENTAL_HOST_PATH")?.EvaluatedValue);
-                    taskIdentityParameters.Add("TaskHostRuntimeVersion", lookup.GetProperty("SdkResolverMSBuildTaskHostRuntimeVersion")?.EvaluatedValue);
-                }
-            }   
+            string hostPath = lookup.GetProperty("DOTNET_EXPERIMENTAL_HOST_PATH")?.EvaluatedValue;
+            string msBuildAssemblyPath = Path.GetDirectoryName(lookup.GetProperty("RuntimeIdentifierGraphPath")?.EvaluatedValue) ?? string.Empty;
+            if (!string.IsNullOrEmpty(hostPath) && !string.IsNullOrEmpty(msBuildAssemblyPath))
+            {
+                taskIdentityParameters.Add(Constants.DotnetHostPath, hostPath);
+                taskIdentityParameters.Add(Constants.MSBuildAssemblyPath, msBuildAssemblyPath);
+            }
 
             return taskIdentityParameters;
         }

@@ -406,7 +406,7 @@ namespace Microsoft.Build.BackEnd
         /// executable (e.g. MSBuild, MSBuildTaskHost or dotnet) and path to MSBuild.dll if we want to use a custom one.
         /// null is returned if executable cannot be resolved.
         /// </summary>
-        internal static (string msbuildExcutable, string msbuildAssemblyPath) GetMSBuildLocationFromHostContext(HandshakeOptions hostContext)
+        internal static (string msbuildExcutable, string msbuildAssemblyPath) GetMSBuildLocationFromHostContext(HandshakeOptions hostContext, IDictionary<string, string> taskHostParameters)
         {
             string toolName = GetTaskHostNameFromHostContext(hostContext);
             string toolPath = null;
@@ -465,8 +465,11 @@ namespace Microsoft.Build.BackEnd
             }
             else if (IsHandshakeOptionEnabled(HandshakeOptions.NET))
             {
-                msbuildAssemblyPath = Path.Combine(BuildEnvironmentHelper.Instance.MSBuildAssemblyDirectory, Constants.MSBuildAssemblyName);
-                toolPath = s_baseTaskHostPathNet;
+                msbuildAssemblyPath = taskHostParameters.TryGetValue(Constants.MSBuildAssemblyPath, out string resolvedAssemblyPath)
+                    ? Path.Combine(resolvedAssemblyPath, Constants.MSBuildAssemblyName)
+                    : Path.Combine(BuildEnvironmentHelper.Instance.MSBuildAssemblyDirectory, Constants.MSBuildAssemblyName);
+
+                toolPath = taskHostParameters.TryGetValue(Constants.DotnetHostPath, out string resolvedHostPath) ? resolvedHostPath : s_baseTaskHostPathNet;
             }
             else
             {
@@ -485,12 +488,17 @@ namespace Microsoft.Build.BackEnd
         /// <summary>
         /// Make sure a node in the requested context exists.
         /// </summary>
-        internal bool AcquireAndSetUpHost(HandshakeOptions hostContext, INodePacketFactory factory, INodePacketHandler handler, TaskHostConfiguration configuration)
+        internal bool AcquireAndSetUpHost(
+            HandshakeOptions hostContext,
+            INodePacketFactory factory,
+            INodePacketHandler handler,
+            TaskHostConfiguration configuration,
+            IDictionary<string, string> taskHostParameters)
         {
             bool nodeCreationSucceeded;
             if (!_nodeContexts.ContainsKey(hostContext))
             {
-                nodeCreationSucceeded = CreateNode(hostContext, factory, handler, configuration);
+                nodeCreationSucceeded = CreateNode(hostContext, factory, taskHostParameters);
             }
             else
             {
@@ -526,7 +534,7 @@ namespace Microsoft.Build.BackEnd
         /// <summary>
         /// Instantiates a new MSBuild or MSBuildTaskHost process acting as a child node.
         /// </summary>
-        internal bool CreateNode(HandshakeOptions hostContext, INodePacketFactory factory, INodePacketHandler handler, TaskHostConfiguration configuration)
+        internal bool CreateNode(HandshakeOptions hostContext, INodePacketFactory factory, IDictionary<string, string> taskHostParameters)
         {
             ErrorUtilities.VerifyThrowArgumentNull(factory);
             ErrorUtilities.VerifyThrow(!_nodeIdToPacketFactory.ContainsKey((int)hostContext), "We should not already have a factory for this context!  Did we forget to call DisconnectFromHost somewhere?");
@@ -537,7 +545,7 @@ namespace Microsoft.Build.BackEnd
                 return false;
             }
 
-            (string msbuildExecutable, string msbuildAssemblyLocation) = GetMSBuildLocationFromHostContext(hostContext);
+            (string msbuildExecutable, string msbuildAssemblyLocation) = GetMSBuildLocationFromHostContext(hostContext, taskHostParameters);
 
             // we couldn't even figure out the location we're trying to launch ... just go ahead and fail.
             if (msbuildExecutable == null)

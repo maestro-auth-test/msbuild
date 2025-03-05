@@ -291,7 +291,7 @@ namespace Microsoft.Build.BackEnd
                 lock (_taskHostLock)
                 {
                     _requiredContext = CommunicationsUtilities.GetHandshakeOptions(taskHost: true, taskHostParameters: _taskHostParameters);
-                    _connectedToTaskHost = _taskHostProvider.AcquireAndSetUpHost(_requiredContext, this, this, hostConfiguration);
+                    _connectedToTaskHost = _taskHostProvider.AcquireAndSetUpHost(_requiredContext, this, this, hostConfiguration, _taskHostParameters);
                 }
 
                 if (_connectedToTaskHost)
@@ -570,7 +570,7 @@ namespace Microsoft.Build.BackEnd
         /// </summary>
         private void LogErrorUnableToCreateTaskHost(HandshakeOptions requiredContext, string runtime, string architecture, NodeFailedToLaunchException e)
         {
-            string msbuildLocation = NodeProviderOutOfProcTaskHost.GetMSBuildLocationFromHostContext(requiredContext).msbuildExcutable ??
+            string msbuildLocation = NodeProviderOutOfProcTaskHost.GetMSBuildLocationFromHostContext(requiredContext, _taskHostParameters).msbuildExcutable ??
                 // We don't know the path -- probably we're trying to get a 64-bit assembly on a
                 // 32-bit machine.  At least give them the exe name to look for, though ...
                 ((requiredContext & HandshakeOptions.CLR2) == HandshakeOptions.CLR2 ? "MSBuildTaskHost.exe" : Constants.MSBuildExecutableName);
