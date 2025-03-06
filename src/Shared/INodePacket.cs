@@ -240,6 +240,7 @@ namespace Microsoft.Build.BackEnd
         {
             get;
         }
+
         #endregion
     }
 }

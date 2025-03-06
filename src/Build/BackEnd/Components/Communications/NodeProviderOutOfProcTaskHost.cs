@@ -43,11 +43,6 @@ namespace Microsoft.Build.BackEnd
         private static string s_baseTaskHostPathArm64;
 
         /// <summary>
-        /// Store the NET path for MSBuildTaskHost so that we don't have to keep recalculating it.
-        /// </summary>
-        private static string s_baseTaskHostPathNet;
-
-        /// <summary>
         /// Store the path for the 32-bit MSBuildTaskHost so that we don't have to keep re-calculating it.
         /// </summary>
         private static string s_pathToX32Clr2;
@@ -415,7 +410,6 @@ namespace Microsoft.Build.BackEnd
             s_baseTaskHostPath = BuildEnvironmentHelper.Instance.MSBuildToolsDirectory32;
             s_baseTaskHostPath64 = BuildEnvironmentHelper.Instance.MSBuildToolsDirectory64;
             s_baseTaskHostPathArm64 = BuildEnvironmentHelper.Instance.MSBuildToolsDirectoryArm64;
-            s_baseTaskHostPathNet = BuildEnvironmentHelper.Instance.MSBuildToolsDirectoryNET;
 
             ErrorUtilities.VerifyThrowInternalErrorUnreachable(IsHandshakeOptionEnabled(HandshakeOptions.TaskHost));
 
@@ -465,11 +459,17 @@ namespace Microsoft.Build.BackEnd
             }
             else if (IsHandshakeOptionEnabled(HandshakeOptions.NET))
             {
-                msbuildAssemblyPath = taskHostParameters.TryGetValue(Constants.MSBuildAssemblyPath, out string resolvedAssemblyPath)
-                    ? Path.Combine(resolvedAssemblyPath, Constants.MSBuildAssemblyName)
-                    : Path.Combine(BuildEnvironmentHelper.Instance.MSBuildAssemblyDirectory, Constants.MSBuildAssemblyName);
+                if (!string.IsNullOrEmpty(BuildEnvironmentHelper.Instance.MSBuildAssemblyDirectory))
+                {
+                    msbuildAssemblyPath = Path.Combine(BuildEnvironmentHelper.Instance.MSBuildAssemblyDirectory, Constants.MSBuildAssemblyName);
+                }
+                else if (taskHostParameters.TryGetValue(Constants.MSBuildAssemblyPath, out string resolvedAssemblyPath))
+                {
+                    msbuildAssemblyPath = Path.Combine(resolvedAssemblyPath, Constants.MSBuildAssemblyName);
+                    ValidateNetHostSdkVersion(msbuildAssemblyPath);
+                }
 
-                toolPath = taskHostParameters.TryGetValue(Constants.DotnetHostPath, out string resolvedHostPath) ? resolvedHostPath : s_baseTaskHostPathNet;
+                toolPath = taskHostParameters.TryGetValue(Constants.DotnetHostPath, out string resolvedHostPath) ? resolvedHostPath : null;
             }
             else
             {
@@ -481,6 +481,31 @@ namespace Microsoft.Build.BackEnd
             return toolName != null && toolPath != null
                 ? (msbuildExcutable: Path.Combine(toolPath, toolName), msbuildAssemblyPath)
                 : (msbuildExcutable: null, null);
+
+            void ValidateNetHostSdkVersion(string path)
+            {
+                const int minimumSdkVersion = 10;
+                const string errorMessage = $"Net TaskHost is only supported in SDK version 10 or later.";
+
+                if (string.IsNullOrEmpty(path))
+                {
+                    ErrorUtilities.ThrowInternalError("SDK path cannot be null or empty.");
+                    return;
+                }
+
+                string lastDirectoryName = Path.GetFileName(path.TrimEnd(Path.DirectorySeparatorChar));
+                int dotIndex = lastDirectoryName.IndexOf('.');
+                if (dotIndex <= 0)
+                {
+                    ErrorUtilities.ThrowInternalError($"Invalid SDK directory format: '{lastDirectoryName}'. {errorMessage}");
+                }
+
+                if (int.TryParse(lastDirectoryName.Substring(0, dotIndex), out int majorVersion)
+                    && majorVersion < minimumSdkVersion)
+                {
+                    ErrorUtilities.ThrowInternalError($"SDK version {majorVersion} is below the minimum required version. {errorMessage}");
+                }
+            }
 
             bool IsHandshakeOptionEnabled(HandshakeOptions option) => (hostContext & option) == option;
         }

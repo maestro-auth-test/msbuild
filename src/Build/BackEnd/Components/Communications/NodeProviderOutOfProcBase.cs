@@ -768,6 +768,10 @@ namespace Microsoft.Build.BackEnd
                                 writeStream.Position = 1;
                                 WriteInt32(writeStream, writeStreamLength - 5);
 
+                                // Add version byte (new)
+                                byte version = packet.Version; // You'd need to add this property to your packet class
+                                writeStream.WriteByte(version);
+
                                 byte[] writeStreamBuffer = writeStream.GetBuffer();
 
                                 for (int i = 0; i < writeStreamLength; i += MaxPacketWriteSize)
