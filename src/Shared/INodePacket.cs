@@ -3,6 +3,9 @@
 
 #nullable disable
 
+using System.Collections.Generic;
+using System.IO;
+
 namespace Microsoft.Build.BackEnd
 {
     #region Enums
@@ -242,5 +245,44 @@ namespace Microsoft.Build.BackEnd
         }
 
         #endregion
+    }
+
+    internal static class PacketTypeExtensions
+    {
+        private const byte ExtendedHeaderFlag = 0x40; // Bit 6 indicates extended header with version
+
+        /// <summary>
+        /// Determines if a packet has an extended header by checking if the extended header flag is set.
+        /// The secondary check with (byte)NodePacketType.ServerNodeBuildCommand ensures special server command packets (0xF0-0xFF) 
+        /// are never interpreted as having extended headers, even if they happen to have the flag bit set.
+        /// </summary>
+        /// <param name="rawType">The raw packet type byte.</param>
+        /// <returns>True if the packet has an extended header, false otherwise</returns>
+        public static bool HasExtendedHeader(byte rawType) => (rawType & ExtendedHeaderFlag) != 0 && (rawType < (byte)NodePacketType.ServerNodeBuildCommand);
+
+        // Get base type, stripping the extended header flag
+        public static NodePacketType GetNodePacketType(byte rawType) => (NodePacketType)(rawType & ~ExtendedHeaderFlag);
+
+        // Create a type with extended header flag
+        public static byte CreateExtendedHeaderType(NodePacketType type) => (byte)((byte)type | ExtendedHeaderFlag);
+
+        // Read extended header (returns version)
+        public static byte ReadVersion(Stream stream) => (byte)stream.ReadByte();
+
+        // Write extended header with version
+        public static void WriteVersion(Stream stream, byte version) => stream.WriteByte(version);
+    }
+
+    internal static class PacketVersionManager
+    {
+        private static readonly Dictionary<NodePacketType, byte> _currentPacketVersions = new Dictionary<NodePacketType, byte>
+        {
+            { NodePacketType.TaskHostConfiguration, 1 },
+        };
+
+        // Get current version for a packet type
+        public static byte GetCurrentVersion(NodePacketType type) => _currentPacketVersions.TryGetValue(type, out byte version) ? version : (byte)1;
+
+        public static bool SupportsVersioning(NodePacketType type) => _currentPacketVersions.ContainsKey(type);
     }
 }

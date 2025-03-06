@@ -465,8 +465,8 @@ namespace Microsoft.Build.BackEnd
                 }
                 else if (taskHostParameters.TryGetValue(Constants.MSBuildAssemblyPath, out string resolvedAssemblyPath))
                 {
+                    ValidateNetHostSdkVersion(resolvedAssemblyPath);
                     msbuildAssemblyPath = Path.Combine(resolvedAssemblyPath, Constants.MSBuildAssemblyName);
-                    ValidateNetHostSdkVersion(msbuildAssemblyPath);
                 }
 
                 toolPath = taskHostParameters.TryGetValue(Constants.DotnetHostPath, out string resolvedHostPath) ? resolvedHostPath : null;

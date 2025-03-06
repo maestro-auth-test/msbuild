@@ -756,10 +756,23 @@ namespace Microsoft.Build.BackEnd
                             ITranslator writeTranslator = BinaryTranslator.GetWriteTranslator(writeStream);
                             try
                             {
-                                writeStream.WriteByte((byte)packet.Type);
+                                NodePacketType packetType = packet.Type;
+                                bool supportsVersioning = PacketVersionManager.SupportsVersioning(packetType);
+
+                                // Write packet type with extended header flag if versioned
+                                byte rawPackageType = supportsVersioning ? PacketTypeExtensions.CreateExtendedHeaderType(packetType) : (byte)packetType;
+                                writeStream.WriteByte(rawPackageType);
 
                                 // Pad for the packet length
                                 WriteInt32(writeStream, 0);
+
+                                // If versioned, write extended header with version
+                                if (supportsVersioning)
+                                {
+                                    byte currentVersion = PacketVersionManager.GetCurrentVersion(packetType);
+                                    PacketTypeExtensions.WriteVersion(writeStream, currentVersion);
+                                }
+
                                 packet.Translate(writeTranslator);
 
                                 int writeStreamLength = (int)writeStream.Position;
@@ -767,10 +780,6 @@ namespace Microsoft.Build.BackEnd
                                 // Now plug in the real packet length
                                 writeStream.Position = 1;
                                 WriteInt32(writeStream, writeStreamLength - 5);
-
-                                // Add version byte (new)
-                                byte version = packet.Version; // You'd need to add this property to your packet class
-                                writeStream.WriteByte(version);
 
                                 byte[] writeStreamBuffer = writeStream.GetBuffer();
 

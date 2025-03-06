@@ -595,7 +595,17 @@ namespace Microsoft.Build.BackEnd
                                 break;
                             }
 
-                            NodePacketType packetType = (NodePacketType)headerByte[0];
+                            // Check if this packet has an extended header that includes a version part.
+                            byte rawType = headerByte[0];
+
+                            bool hasExtendedHeader = PacketTypeExtensions.HasExtendedHeader(rawType);
+                            NodePacketType packetType = PacketTypeExtensions.HasExtendedHeader(rawType) ? PacketTypeExtensions.GetNodePacketType(rawType) : (NodePacketType)rawType;
+
+                            byte version;
+                            if (hasExtendedHeader)
+                            {
+                                version = PacketTypeExtensions.ReadVersion(localReadPipe);
+                            }
 
                             try
                             {
