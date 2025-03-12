@@ -10,6 +10,10 @@
     <!-- Workaround for https://github.com/dotnet/roslyn/issues/35793 -->
     <SemanticVersioningV1>true</SemanticVersioningV1>
     <MicroBuildPluginsSwixBuildVersion>1.1.87</MicroBuildPluginsSwixBuildVersion>
+    <SystemCodeDomVersion>10.0.0-preview.3.25161.120</SystemCodeDomVersion>
+    <SystemSecurityCryptographyPkcsVersion>10.0.0-preview.3.25161.120</SystemSecurityCryptographyPkcsVersion>
+    <SystemSecurityCryptographyXmlVersion>10.0.0-preview.3.25161.120</SystemSecurityCryptographyXmlVersion>
+    <MicrosoftDotNetXliffTasksVersion>10.0.0-beta.25161.120</MicrosoftDotNetXliffTasksVersion>
   </PropertyGroup>
   <!-- Repo Toolset Features -->
   <PropertyGroup>
@@ -41,20 +45,20 @@
   <PropertyGroup>
     <MicrosoftIORedistVersion>6.0.1</MicrosoftIORedistVersion>
     <MicrosoftVisualStudioSolutionPersistenceVersion>1.0.52</MicrosoftVisualStudioSolutionPersistenceVersion>
-    <SystemCollectionsImmutableVersion>9.0.0</SystemCollectionsImmutableVersion>
-    <SystemConfigurationConfigurationManagerVersion>9.0.0</SystemConfigurationConfigurationManagerVersion>
-    <SystemFormatsAsn1Version>9.0.0</SystemFormatsAsn1Version>
+    <SystemCollectionsImmutableVersion>10.0.0-preview.3.25161.120</SystemCollectionsImmutableVersion>
+    <SystemConfigurationConfigurationManagerVersion>10.0.0-preview.3.25161.120</SystemConfigurationConfigurationManagerVersion>
+    <SystemFormatsAsn1Version>10.0.0-preview.3.25161.120</SystemFormatsAsn1Version>
     <SystemNetHttpVersion>4.3.4</SystemNetHttpVersion>
-    <SystemReflectionMetadataLoadContextVersion>9.0.0</SystemReflectionMetadataLoadContextVersion>
-    <SystemReflectionMetadataVersion>9.0.0</SystemReflectionMetadataVersion>
-    <SystemResourcesExtensionsVersion>9.0.0</SystemResourcesExtensionsVersion>
+    <SystemReflectionMetadataLoadContextVersion>10.0.0-preview.3.25161.120</SystemReflectionMetadataLoadContextVersion>
+    <SystemReflectionMetadataVersion>10.0.0-preview.3.25161.120</SystemReflectionMetadataVersion>
+    <SystemResourcesExtensionsVersion>10.0.0-preview.3.25161.120</SystemResourcesExtensionsVersion>
     <SystemSecurityPrincipalWindowsVersion>5.0.0</SystemSecurityPrincipalWindowsVersion>
     <SystemTextEncodingCodePagesVersion>9.0.0</SystemTextEncodingCodePagesVersion>
     <SystemTextRegularExpressionsVersion>4.3.1</SystemTextRegularExpressionsVersion>
-    <SystemTextJsonVersion>9.0.0</SystemTextJsonVersion>
-    <SystemThreadingChannelsVersion>9.0.0</SystemThreadingChannelsVersion>
-    <SystemThreadingTasksDataflowVersion>9.0.0</SystemThreadingTasksDataflowVersion>
-    <SystemDiagnosticsDiagnosticSourceVersion>9.0.0</SystemDiagnosticsDiagnosticSourceVersion>
+    <SystemTextJsonVersion>10.0.0-preview.3.25161.120</SystemTextJsonVersion>
+    <SystemThreadingChannelsVersion>10.0.0-preview.3.25161.120</SystemThreadingChannelsVersion>
+    <SystemThreadingTasksDataflowVersion>10.0.0-preview.3.25161.120</SystemThreadingTasksDataflowVersion>
+    <SystemDiagnosticsDiagnosticSourceVersion>10.0.0-preview.3.25161.120</SystemDiagnosticsDiagnosticSourceVersion>
     <MicrosoftVisualStudioOpenTelemetryVersion>0.2.104-beta</MicrosoftVisualStudioOpenTelemetryVersion>
   </PropertyGroup>
   <!-- Toolset Dependencies -->
@@ -64,7 +68,7 @@
     <DotNetCliVersion>$([System.Text.RegularExpressions.Regex]::Match($([System.IO.File]::ReadAllText('$(MSBuildThisFileDirectory)..\global.json')), '"dotnet": "([^"]*)"').Groups.get_Item(1))</DotNetCliVersion>
     <MicrosoftCodeAnalysisCollectionsVersion>4.2.0-1.22102.8</MicrosoftCodeAnalysisCollectionsVersion>
     <MicrosoftDotNetXUnitExtensionsVersion>9.0.0-beta.25111.5</MicrosoftDotNetXUnitExtensionsVersion>
-    <MicrosoftNetCompilersToolsetVersion>4.14.0-2.25111.1</MicrosoftNetCompilersToolsetVersion>
+    <MicrosoftNetCompilersToolsetVersion>4.14.0-3.25161.120</MicrosoftNetCompilersToolsetVersion>
     <NuGetBuildTasksVersion>6.14.0-preview.1.53</NuGetBuildTasksVersion>
   </PropertyGroup>
   <PropertyGroup Condition="!$(TargetFramework.StartsWith('net4'))">
