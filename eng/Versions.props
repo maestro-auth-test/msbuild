@@ -15,11 +15,11 @@
     <!-- Workaround for https://github.com/dotnet/roslyn/issues/35793 -->
     <SemanticVersioningV1>true</SemanticVersioningV1>
     <MicroBuildPluginsSwixBuildVersion>1.1.87</MicroBuildPluginsSwixBuildVersion>
-    <MicrosoftBclCryptographyVersion>10.0.0-preview.4.25215.101</MicrosoftBclCryptographyVersion>
-    <SystemCodeDomVersion>10.0.0-preview.4.25215.101</SystemCodeDomVersion>
-    <SystemSecurityCryptographyPkcsVersion>10.0.0-preview.4.25215.101</SystemSecurityCryptographyPkcsVersion>
-    <SystemSecurityCryptographyXmlVersion>10.0.0-preview.4.25215.101</SystemSecurityCryptographyXmlVersion>
-    <MicrosoftDotNetXliffTasksVersion>10.0.0-beta.25215.101</MicrosoftDotNetXliffTasksVersion>
+    <MicrosoftBclCryptographyVersion>10.0.0-preview.4.25215.102</MicrosoftBclCryptographyVersion>
+    <SystemCodeDomVersion>10.0.0-preview.4.25215.102</SystemCodeDomVersion>
+    <SystemSecurityCryptographyPkcsVersion>10.0.0-preview.4.25215.102</SystemSecurityCryptographyPkcsVersion>
+    <SystemSecurityCryptographyXmlVersion>10.0.0-preview.4.25215.102</SystemSecurityCryptographyXmlVersion>
+    <MicrosoftDotNetXliffTasksVersion>10.0.0-beta.25215.102</MicrosoftDotNetXliffTasksVersion>
   </PropertyGroup>
   <!-- Repo Toolset Features -->
   <PropertyGroup>
@@ -53,21 +53,21 @@
   </PropertyGroup>
   <PropertyGroup>
     <!-- dotnet/runtime packages -->
-    <SystemCollectionsImmutableVersion>10.0.0-preview.4.25215.101</SystemCollectionsImmutableVersion>
-    <SystemConfigurationConfigurationManagerVersion>10.0.0-preview.4.25215.101</SystemConfigurationConfigurationManagerVersion>
-    <SystemDiagnosticsDiagnosticSourceVersion>10.0.0-preview.4.25215.101</SystemDiagnosticsDiagnosticSourceVersion>
-    <SystemDiagnosticsEventLogVersion>10.0.0-preview.4.25215.101</SystemDiagnosticsEventLogVersion>
-    <SystemFormatsAsn1Version>10.0.0-preview.4.25215.101</SystemFormatsAsn1Version>
-    <SystemFormatsNrbfVersion>10.0.0-preview.4.25215.101</SystemFormatsNrbfVersion>
-    <SystemReflectionMetadataVersion>10.0.0-preview.4.25215.101</SystemReflectionMetadataVersion>
-    <SystemReflectionMetadataLoadContextVersion>10.0.0-preview.4.25215.101</SystemReflectionMetadataLoadContextVersion>
-    <SystemResourcesExtensionsVersion>10.0.0-preview.4.25215.101</SystemResourcesExtensionsVersion>
-    <SystemSecurityCryptographyProtectedDataVersion>10.0.0-preview.4.25215.101</SystemSecurityCryptographyProtectedDataVersion>
+    <SystemCollectionsImmutableVersion>10.0.0-preview.4.25215.102</SystemCollectionsImmutableVersion>
+    <SystemConfigurationConfigurationManagerVersion>10.0.0-preview.4.25215.102</SystemConfigurationConfigurationManagerVersion>
+    <SystemDiagnosticsDiagnosticSourceVersion>10.0.0-preview.4.25215.102</SystemDiagnosticsDiagnosticSourceVersion>
+    <SystemDiagnosticsEventLogVersion>10.0.0-preview.4.25215.102</SystemDiagnosticsEventLogVersion>
+    <SystemFormatsAsn1Version>10.0.0-preview.4.25215.102</SystemFormatsAsn1Version>
+    <SystemFormatsNrbfVersion>10.0.0-preview.4.25215.102</SystemFormatsNrbfVersion>
+    <SystemReflectionMetadataVersion>10.0.0-preview.4.25215.102</SystemReflectionMetadataVersion>
+    <SystemReflectionMetadataLoadContextVersion>10.0.0-preview.4.25215.102</SystemReflectionMetadataLoadContextVersion>
+    <SystemResourcesExtensionsVersion>10.0.0-preview.4.25215.102</SystemResourcesExtensionsVersion>
+    <SystemSecurityCryptographyProtectedDataVersion>10.0.0-preview.4.25215.102</SystemSecurityCryptographyProtectedDataVersion>
     <SystemSecurityPrincipalWindowsVersion>5.0.0</SystemSecurityPrincipalWindowsVersion>
-    <SystemTextEncodingCodePagesVersion>10.0.0-preview.4.25215.101</SystemTextEncodingCodePagesVersion>
-    <SystemTextJsonVersion>10.0.0-preview.4.25215.101</SystemTextJsonVersion>
-    <SystemThreadingChannelsVersion>10.0.0-preview.4.25215.101</SystemThreadingChannelsVersion>
-    <SystemThreadingTasksDataflowVersion>10.0.0-preview.4.25215.101</SystemThreadingTasksDataflowVersion>
+    <SystemTextEncodingCodePagesVersion>10.0.0-preview.4.25215.102</SystemTextEncodingCodePagesVersion>
+    <SystemTextJsonVersion>10.0.0-preview.4.25215.102</SystemTextJsonVersion>
+    <SystemThreadingChannelsVersion>10.0.0-preview.4.25215.102</SystemThreadingChannelsVersion>
+    <SystemThreadingTasksDataflowVersion>10.0.0-preview.4.25215.102</SystemThreadingTasksDataflowVersion>
   </PropertyGroup>
   <PropertyGroup>
     <MicrosoftVisualStudioOpenTelemetryVersion>0.2.104-beta</MicrosoftVisualStudioOpenTelemetryVersion>
@@ -86,8 +86,8 @@
          Otherwise, this version of dotnet will not be installed and the build will error out. -->
     <DotNetCliVersion>$([System.Text.RegularExpressions.Regex]::Match($([System.IO.File]::ReadAllText('$(MSBuildThisFileDirectory)..\global.json')), '"dotnet": "([^"]*)"').Groups.get_Item(1))</DotNetCliVersion>
     <MicrosoftCodeAnalysisCollectionsVersion>4.2.0-1.22102.8</MicrosoftCodeAnalysisCollectionsVersion>
-    <MicrosoftDotNetXUnitExtensionsVersion>10.0.0-beta.25215.101</MicrosoftDotNetXUnitExtensionsVersion>
-    <MicrosoftNetCompilersToolsetVersion>5.0.0-1.25215.101</MicrosoftNetCompilersToolsetVersion>
+    <MicrosoftDotNetXUnitExtensionsVersion>10.0.0-beta.25215.102</MicrosoftDotNetXUnitExtensionsVersion>
+    <MicrosoftNetCompilersToolsetVersion>5.0.0-1.25215.102</MicrosoftNetCompilersToolsetVersion>
     <NuGetBuildTasksVersion>6.14.0-preview.1.102</NuGetBuildTasksVersion>
   </PropertyGroup>
   <PropertyGroup Condition="!$(TargetFramework.StartsWith('net4'))">
