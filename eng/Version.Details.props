@@ -20,7 +20,6 @@ This file should be imported by eng/Versions.props
     <SystemFormatsNrbfPackageVersion>10.0.0-preview.7.25377.103</SystemFormatsNrbfPackageVersion>
     <SystemReflectionMetadataPackageVersion>10.0.0-preview.7.25377.103</SystemReflectionMetadataPackageVersion>
     <SystemReflectionMetadataLoadContextPackageVersion>10.0.0-preview.7.25377.103</SystemReflectionMetadataLoadContextPackageVersion>
-    <SystemResourcesExtensionsPackageVersion>10.0.0-preview.7.25377.103</SystemResourcesExtensionsPackageVersion>
     <SystemSecurityCryptographyPkcsPackageVersion>10.0.0-preview.7.25377.103</SystemSecurityCryptographyPkcsPackageVersion>
     <SystemSecurityCryptographyProtectedDataPackageVersion>10.0.0-preview.7.25377.103</SystemSecurityCryptographyProtectedDataPackageVersion>
     <SystemSecurityCryptographyXmlPackageVersion>10.0.0-preview.7.25377.103</SystemSecurityCryptographyXmlPackageVersion>
@@ -54,7 +53,6 @@ This file should be imported by eng/Versions.props
     <SystemTextEncodingCodePagesVersion>$(SystemTextEncodingCodePagesPackageVersion)</SystemTextEncodingCodePagesVersion>
     <SystemTextJsonVersion>$(SystemTextJsonPackageVersion)</SystemTextJsonVersion>
     <SystemThreadingChannelsVersion>$(SystemThreadingChannelsPackageVersion)</SystemThreadingChannelsVersion>
-    <SystemThreadingTasksDataflowVersion>$(SystemThreadingTasksDataflowPackageVersion)</SystemThreadingTasksDataflowVersion>
     <!-- nuget/nuget.client dependencies -->
     <NuGetBuildTasksVersion>$(NuGetBuildTasksPackageVersion)</NuGetBuildTasksVersion>
   </PropertyGroup>
